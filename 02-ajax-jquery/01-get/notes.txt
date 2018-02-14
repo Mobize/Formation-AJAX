@@ -1,0 +1,24 @@
+
+Cheminement:
+
+l'index.php va chercher ajax.js par le biais du <script src="">
+ajax.js envoi à ajax.php par le biais de $.post("ajax.php"...)
+ajax.php renvoi à ajax.js par le biais de echo json_encode(...);
+
+-------------------------------
+01-GET-jquery
+
+fichier 
+index.php
+ajax.js
+jquery.3.3.1.js ( a charger dans index.php)
+
+creer une div et un bouton avec un id pour les 2
+éditer ajax.js
+
+----------------------------
+02-SELECTID
+meme fichiers + fichier ajax.php
+editer index.php 
+editer ajax.php
+editer ajax.js

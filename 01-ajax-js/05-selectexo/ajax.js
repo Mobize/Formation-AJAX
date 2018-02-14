@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function(event){
     else r = new ActiveXObject("Microsoft.XMLHTTP"); 
 
     var personne = document.getElementById('personne');
-    personne = personne.options[personne.selectedIndex].value;/* si c est un select, sinon 'personne = personne.innerHTML;' */
+    personne = personne.options[personne.selectedIndex].value;/* si c'est un select, sinon 'personne = personne.innerHTML;' */
     var parameters = "personne="+personne;
     r.open('POST',"ajax.php",true);
     r.setRequestHeader('Content-type',"application/x-www-form-urlencoded");
