@@ -8,16 +8,29 @@ if ( isset($_POST['connexion']) )/* si on clique sur connexion */
 
     $resultat = $pdo->prepare('SELECT * FROM membre WHERE pseudo = :pseudo');
     $resultat->execute( array('pseudo' =>$_POST['pseudo']) );
-    $membre = $resultat->fetch(PDO::FETCH8ASSOC);
+    $membre = $resultat->fetch(PDO::FETCH_ASSOC);
 
-    if ( $resultat->rowCount() == 0)
+    if ( $resultat->rowCount() == 0)/* le pseudo n est pas en base de donnée donc creation d un nouveau membre */
     {
         /* insertion en base d'un nouveau membre */
+        $result=$pdo->prepare("INSERT INTO membre VALUES(NULL,:pseudo,:civilite,:ville,:date_de_naissance,:ip,".time().")");
+        $result->execute(array(
+            'pseudo'            => $_POST['pseudo'],
+            'civilite'          =>$_POST['civilite'],
+            'ville'             =>$_POST['ville'],
+            'date_de_naissance' =>$_POST['date_de_naissance'],
+            'ip'                =>gethostbyname($_SERVER['SERVER_NAME'])
+        ));
+        $id_membre=$pdo->lastInsertId();/* recupere la derniere insertion dans la base et la stock dans une variable $id_membre */
+
     }
-    elseif( $resultat->rowCount()>0  && $membre['ip'] == $_SERVER['REMOTE_ADDR'] )
+    elseif( $resultat->rowCount()>0  && $membre['ip'] == gethostbyname($_SERVER['SERVER_NAME'] ))
     {
-        /* le pseudo est connu et l'internaute est proprietaire du psudo (meme ip) */
+        /* le pseudo est connu et l'internaute est proprietaire du pseudo (meme ip) */
         /* on met à jour la date de connexion */
+        $result = $pdo->prepare('UPDATE membre SET date_connexion='.time().' WHERE id_membre=:id_membre');
+        $result->execute(array('id_membre' => $membre['id_membre']));
+        $id_membre=$membre['id_membre'];
     }
     else
     {
@@ -26,6 +39,10 @@ if ( isset($_POST['connexion']) )/* si on clique sur connexion */
     if(empty($msg))
     {
         /* remplir $_SESSION et rediriger vers index.php */
+        $_SESSION['id_membre'] = $id_membre;
+        $_SESSION['pseudo'] = $_POST['pseudo'];
+        header('location:index.php');
+        exit();
     }
 }
 
@@ -47,9 +64,9 @@ if ( isset($_POST['connexion']) )/* si on clique sur connexion */
     <fieldset>
         <form action="" method="post">
             <label for="pseudo">Pseudo</label>
-            <input type="text" id="pseudo" name="pseudo" value=""><br>
+            <input type="text" id="pseudo" name="pseudo" required value=""><br>
 
-            <label for="civimité">Sexe</label>
+            <label for="civilité">Civilité</label>
             <input type="radio" name="civilite" id="civilite" value="f" checked> Femme
             <input type="radio" name="civilite" id="civilite" value="m" > Homme<br>
 

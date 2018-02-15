@@ -21,6 +21,9 @@ border: 1px solid #c0c0c0;
 padding: 5px;
 overflow: auto;
 background: #fff;
+overflow: scroll;
+overflow-x: hidden;
+max-height: 500px;
 }
 #message_tchat  p.bleu:hover, #liste_membre_connecte  p.bleu:hover{
 /*background: #f2f2f2;*/
